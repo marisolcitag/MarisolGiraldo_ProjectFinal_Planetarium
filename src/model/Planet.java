@@ -248,6 +248,7 @@ public class Planet implements Comparable<Planet>{
 		this.previous = anterior;
 	}
 
+	
 	@Override
 	public int compareTo(Planet p) {
 		// TODO Auto-generated method stub
@@ -345,4 +346,22 @@ public class Planet implements Comparable<Planet>{
 		}
 		return s;
 	}
+
+	public NaturalSatellite getRootNatural() {
+		return rootNatural;
+	}
+
+	public void setRootNatural(NaturalSatellite rootNatural) {
+		this.rootNatural = rootNatural;
+	}
+
+	public ArtificialSatellite getRootArtificial() {
+		return rootArtificial;
+	}
+
+	public void setRootArtificial(ArtificialSatellite rootArtificial) {
+		this.rootArtificial = rootArtificial;
+	}
+	
+	
 }

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Planetarium{
     
     private ArrayList<Galaxy> galaxies;
-    
+       
     private Publicity publicity;
 
     // CONSTRUCTOR
@@ -209,6 +209,12 @@ public class Planetarium{
 	}
 
 	//NATURAL SATELLITE
+	public Satellite getSatellitesNatural(String nameG, String nameP) {
+		return searchGalaxy(nameG).searchPlanet(nameP).getRootNatural();
+  		 
+  	}
+
+	
 	public void addNaturalSatelite( String nameG, String nameP, String nameS, String statusS, int areaS ){
 		searchGalaxy(nameG).addNaturalSatellite(nameP, nameS, statusS, areaS);
 	    
@@ -220,7 +226,7 @@ public class Planetarium{
     }
 	
 	//ARTIFICIAL SATELLITE
-	public void addArtificialSatelLite( String nameG, String nameP, String nameS, String countryS, ArtificialSatellite.serviceType typeS) {
+	public void addArtificialSatellite( String nameG, String nameP, String nameS, String countryS, ArtificialSatellite.serviceType typeS) {
 		searchGalaxy(nameG).addArtificialSatellite(nameP, nameS,countryS,typeS);
 	}
 	
@@ -228,6 +234,11 @@ public class Planetarium{
     {
         searchGalaxy(nameG).deleteArtificialSatellite(nameP, nameS);
     }
+	
+	public Satellite getSatellitesArtificial(String nameG, String nameP) {
+		return searchGalaxy(nameG).searchPlanet(nameP).getRootArtificial();
+  		 
+  	}
 	
 	
 	

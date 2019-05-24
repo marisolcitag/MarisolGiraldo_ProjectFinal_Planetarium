@@ -1,6 +1,14 @@
 package model;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class Galaxy {
+	
+	public static final String PATH ="data/text/planets.txt";
 	
 	// CONSTANTES
 	/**
@@ -76,41 +84,29 @@ public class Galaxy {
 	
 	public void initialize() {
 		
-		if(name.equals("Andromeda")) {
-			myFirstPlanet= new Planet(IPSILON_A, 0.266, 0.105, 105.68, 372.495, 4.004, "data/img/"+IPSILON_A+".gif");
-			Planet planetIpsilonB= new Planet(IPSILON_B, 0.166, 0.405, 317.58, 248.823, 8.134, "data/img/"+IPSILON_B+".gif");
-			myFirstPlanet.setPrevious(null);
-	        myFirstPlanet.setNext(planetIpsilonB);
-	        planetIpsilonB.setPrevious(myFirstPlanet);
-	        planetIpsilonB.setNext(null);
-		}else {
-		
-		myFirstPlanet = new Planet( MERCURY, 0.466, 0.205, 115.88, 478.725, 7.004, "data/img/"+MERCURY+".gif" );
-        Planet venus = new Planet( VENUS, 0.728, 0.006, 583.92, 35.021, 339.471, "data/img/"+VENUS+".gif");
-        Planet tierra = new Planet( EARTH, 1.016, 0.0167, 365.25, 30.28, 23.45,"data/img/"+EARTH+".gif" );
-        Planet marte = new Planet( MARS, 1.665, 0.09341233, 779.95, 24.13, 1.850,"data/img/"+MARS+".gif" );
-        Planet jupiter = new Planet( JUPITER, 5.458, 0.09341233, 398.9, 13.069, 1.305,"data/img/"+JUPITER+".gif" );
-        Planet saturno = new Planet( SATURN, 10.115, 0.0541506, 378.1, 9.67, 2.484,"data/img/"+SATURN+".gif" );
-        Planet urano = new Planet( URANUS, 20.096, 0.04716771, 369.7, 6.835, 0.769,"data/img/"+URANUS+".jpg");
-        Planet neptuno = new Planet( NEPTUNE, 30.327, 0.00858587, 367.5, 5.47, 1.769,"data/img/"+NEPTUNE+".gif");
-        
-        myFirstPlanet.setPrevious(null);
-        myFirstPlanet.setNext(venus);
-        venus.setPrevious(myFirstPlanet);
-        venus.setNext(tierra);
-        tierra.setPrevious(venus);
-        tierra.setNext(marte);
-        marte.setPrevious(tierra);
-        marte.setNext(jupiter);
-        jupiter.setPrevious(marte);
-        jupiter.setNext(saturno);
-        saturno.setPrevious(jupiter);
-        saturno.setNext(urano);
-        urano.setPrevious(saturno);
-        urano.setNext(neptuno);
-        neptuno.setPrevious(urano);
-        neptuno.setNext(null);
+		if(name.equalsIgnoreCase("Andromeda") || name.equalsIgnoreCase("Via Lactea")) {
+		 try {
+			loadPlanetsFile(PATH, ",");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		}
+		else {
+			Planet newP = new Planet(name+"-"+0, 0.466, 0.205, 115.88, 478.725, 7.004, "data/img/"+MERCURY+".gif");
+			myFirstPlanet= newP;
+			myFirstPlanet.setPrevious(null);
+			Planet newSecondP ;
+
+			for (int i=1; i<numPlanets;i++) {
+				
+				newSecondP= new Planet(name+"-"+i, 0.466, 0.205, 115.88, 478.725, 7.004, "data/img/"+MERCURY+".gif");
+				newSecondP.setPrevious(newP);
+				newP.setNext(newSecondP);
+				newP=newSecondP;
+			}
+		}
+		
 	}
 
 	public String getName() {
@@ -246,4 +242,72 @@ public class Galaxy {
 	 public String toString() {
 		 return name;
 	 }
+	 
+	 /**
+	     * Carga los perros iniciales de la exposición a partir de un archivo de propiedades.
+	     * @param archivo nombre del archivo de propiedades que contiene la información de los perros - archivo!=null
+	     */
+	 public void loadPlanetsFile(String path, String sep) throws IOException {
+			File f = new File(path);
+			FileReader fr = new FileReader(f);
+			BufferedReader br = new BufferedReader(fr);
+			
+			String line = br.readLine();
+			while(line != null) {
+				String[] parts = line.split(sep);
+				
+				String nameG = parts[0];
+				String name = parts[1];
+		        double averageDistanceSun = Double.parseDouble(parts[2]);
+		        double eccentricity = Double.parseDouble(parts[3]);
+		        double orbitalPeriod = Double.parseDouble(parts[4]);
+		        double orbitalVelocity = Double.parseDouble(parts[5]);
+		        double inclineOrbital = Double.parseDouble(parts[6]);
+		        String imageSource = parts[7];
+				
+		        if(nameG.equalsIgnoreCase(this.name)) {
+				 Planet p = new Planet(name, averageDistanceSun, eccentricity, orbitalPeriod, orbitalVelocity, inclineOrbital, imageSource);
+				 addPlanet(p);
+		        }
+				line = br.readLine();
+				
+			}
+			
+			br.close();
+			fr.close();
+		}
+	 
+	 public void addPlanet(Planet p) {
+	 
+		 if( myFirstPlanet == null ) // Si la cabeza no existe adiciona de primero el paciente
+		 {
+			 myFirstPlanet = p;
+			 myFirstPlanet.setPrevious(null);
+			 myFirstPlanet.setNext(null);
+		 }
+		 else
+		 {     		       		 
+    	 Planet p2 = searchLast();
+    	 p2.setNext(p);
+    	 p.setPrevious(p2);
+    	 p.setNext(null);
+		 }
+	 }
+	 
+	 public Planet searchLast( )
+	    {
+	        Planet current = myFirstPlanet;
+
+	        if( current != null )
+	        {
+	            while( current.getNext() != null )
+	            {
+	            	current = current.getNext();
+	            }
+	        }
+	        return current;
+	    }
+			
+			
+	
 }

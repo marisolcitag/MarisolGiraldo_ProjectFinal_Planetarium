@@ -13,7 +13,7 @@ public class ArtificialSatellite extends Satellite {
     /**
      * Tipo de servicio que ofrece el satélite artificial.
      */
-    public static enum serviceType{MILITAR, COMUNICACIÓN, METEOROLÓGICO};
+    public static enum serviceType{MILITAR, COMUNICACION, METEOROLOGICO};
     
     public serviceType sType;
     

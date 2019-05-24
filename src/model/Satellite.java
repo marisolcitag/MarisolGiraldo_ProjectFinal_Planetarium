@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class Satellite implements Comparable<Satellite> {
+public abstract class Satellite implements Comparable<Satellite>, Serializable {
 	
 	private String name;
 	
@@ -249,5 +250,25 @@ public abstract class Satellite implements Comparable<Satellite> {
         howmany += ( left == null ) ? 0 : left.countOccurrences( nameNS );
         howmany += ( right == null ) ? 0 : right.countOccurrences( nameNS );
         return howmany;
-    }  
+    } 
+    
+    public ArrayList<Satellite> getListSatellites(ArrayList<Satellite> arrayS){
+    	    	
+    	if( isSheet( ) ) {
+    		arrayS.add(this);
+    		return arrayS;
+    	}
+
+        else if( left != null ) {
+        	arrayS.add(left);
+        	left.getListSatellites(arrayS);
+            
+        }
+        else if( right != null ) {
+        	arrayS.add(right);
+        	right.getListSatellites(arrayS);
+            
+        }        	
+    	return arrayS;
+    }
 }

@@ -410,7 +410,7 @@ public class Main extends Application {
 					// TODO Auto-generated method stub
 				try {
 					AnchorPane root = (AnchorPane)FXMLLoader.load(getClass().getResource("Sample.fxml"));
-					Scene scene = new Scene(root,681,632);
+					Scene scene = new Scene(root,760,820);
 					primaryStage.setTitle("PLANETARIUM");
 					primaryStage.setScene(scene);
 					primaryStage.show();

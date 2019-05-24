@@ -37,11 +37,13 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.ArtificialSatellite;
+import model.ArtificialSatellite.serviceType;
 import model.Galaxy;
 import model.NaturalSatellite;
 import model.Planet;
 import model.Planetarium;
 import model.Publicity;
+import model.Satellite;
 import thread.PlanetariumThread;
 
 /**
@@ -158,6 +160,9 @@ public class PlanetariumController implements Initializable {
 	 
 	@FXML
     private ListView listViewNaturalSatellite;
+	
+	@FXML 
+	private ListView listViewArtificialSatellite;
 	
 	private NaturalSatellite naturalS;
 	
@@ -558,6 +563,8 @@ public class PlanetariumController implements Initializable {
     void orderGByName(ActionEvent event) {
 		
 		
+		
+		
 
     }
 		
@@ -634,13 +641,15 @@ public class PlanetariumController implements Initializable {
 		     			 System.out.println(galaxies.get(i));
 		     			 itemsGalaxy.add(galaxies.get(i));
 		     		 }
+		     		//listViewGalaxy.refresh();
 		     		listViewGalaxy.setItems(itemsGalaxy);
 		    		listViewGalaxy.getSelectionModel().select(0);
 		    		listViewGalaxy.setOnMouseClicked(new EventHandler<Event>() {
 		    			@Override
 		    			public void handle(Event event) {
-		    				itemsGalaxy.setAll(galaxies);
-		    				galaxies.clear();
+		    				loadData();
+		    				/*itemsGalaxy.remove(galaxies);
+		    				itemsGalaxy.setAll(galaxies);*/
 		    			}
 		    		});
 		    		//listViewGalaxy.refresh();
@@ -693,32 +702,6 @@ public class PlanetariumController implements Initializable {
 		     public Galaxy call(ButtonType b) {
 		  
 		         if (b == buttonTypeOk) {
-		        	 try {
-		        	 String gName= text1.getText();
-		        	 String gNum= text2.getText();
-		        	 Galaxy g = new Galaxy(gName,Integer.parseInt(gNum));
-		        	 ArrayList<Galaxy> galaxies = miPlanetario.getGalaxies();
-		        	 galaxies.remove(g);
-		     		 ObservableList items =FXCollections.observableArrayList ();
-		     		 for (int i=0; i<galaxies.size();i++) {
-		     			 items.remove(galaxies.get(i).getName());
-		     		 }
-		     		listViewNaturalSatellite.setItems(items);
-		    		listViewNaturalSatellite.getSelectionModel().select(0);
-		    		listViewNaturalSatellite.setOnMouseClicked(new EventHandler<Event>() {
-		    			@Override
-		    			public void handle(Event event) {
-		    				items.setAll(galaxies);
-		    				galaxies.clear();
-		    			}
-		    		});
-		    		loadData();
-			         System.out.print("Name"+gName+"NumP"+gNum); 
-		        	 }
-		        	 catch (NumberFormatException e) {
-						// TODO: handle exception
-		        		 JOptionPane.showMessageDialog(null, "Por Favor Ingrese en el campo NUMERO DE PLANETAS EN LA GALAXIA un NUMERO ENTERO");
-					}
 		         }
 		         else if (b==buttonTypeCancel) {
 		        	 dialog.close();
@@ -742,7 +725,7 @@ public class PlanetariumController implements Initializable {
 		dialog.setHeaderText("Ingrese la Información del Satelite Natural");
 		dialog.setResizable(true);
 		  
-		Label label1 = new Label("Nombre del Satelite: ");
+		Label label1 = new Label("Nombre del Satelite Natural: ");
 		Label label2 = new Label("Estado: ");
 		Label label3 = new Label("Area: ");
 		TextField text1 = new TextField();
@@ -770,13 +753,33 @@ public class PlanetariumController implements Initializable {
 		    public NaturalSatellite call(ButtonType b) {
 		  
 		        if (b == buttonTypeOk) {	
-		        	 String sName= text1.getText();
-		        	 String sStatus= text2.getText();
-		        	 int sArea = Integer.parseInt(text3.getText());
-		        	 
-		        	 NaturalSatellite s = new NaturalSatellite(sName, sStatus,sArea);
-		        	 
-		        }
+		        	try {
+		        		String sName= text1.getText();
+		        		String sStatus= text2.getText();
+		        		int sArea = Integer.parseInt(text3.getText());
+		        		String nameG = listViewGalaxy.getSelectionModel().getSelectedItem().getName();
+		        		String nameP=  labelNombre.getText();
+		        		miPlanetario.addNaturalSatelite(nameG, nameP, sName, sStatus, sArea);
+		        		ArrayList<Satellite> satellites = miPlanetario.getSatellitesNatural(nameG, nameP).getListSatellites(new ArrayList<Satellite>());
+			        	ObservableList<String> itemsSatellites =FXCollections.observableArrayList ();
+			     		 for (int i=0; i<satellites.size();i++) {
+			     			 System.out.println(satellites.get(i));
+			     			 itemsSatellites.add(satellites.get(i).getName());
+			     		 }
+			     		listViewNaturalSatellite.setItems(itemsSatellites);
+			    		listViewNaturalSatellite.getSelectionModel().select(0);
+			    		listViewNaturalSatellite.setOnMouseClicked(new EventHandler<Event>() {
+			    			@Override
+			    			public void handle(Event event) {
+			    				loadData();
+			    			}
+			    		});
+		        	}
+		        	 catch (NumberFormatException e) {
+						// TODO: handle exception
+		        		 JOptionPane.showMessageDialog(null, "Por Favor Ingrese en el campo NUMERO DE PLANETAS EN LA GALAXIA un NUMERO ENTERO");
+					}
+		         }
 		        else if (b==buttonTypeCancel) {
 		       	 dialog.close();
 		        }
@@ -804,9 +807,9 @@ public class PlanetariumController implements Initializable {
 		dialog.setHeaderText("Ingrese la Información del Satelite Artificial");
 		dialog.setResizable(true);
 		  
-		Label label1 = new Label("Nombre del Satelite: ");
-		Label label2 = new Label("Estado: ");
-		Label label3 = new Label("Area: ");
+		Label label1 = new Label("Nombre del Satelite Artificial: ");
+		Label label2 = new Label("Pais: ");
+		Label label3 = new Label("Tipo de Servicio: ");
 		TextField text1 = new TextField();
 		TextField text2 = new TextField();
 		
@@ -841,20 +844,45 @@ public class PlanetariumController implements Initializable {
 		    @Override
 		    public ArtificialSatellite call(ButtonType b) {
 		  
-		        if (b == buttonTypeOk) {		  
-		           
-		            
-		        }
-		        else if (b==buttonTypeCancel) {
-		       	 dialog.close();
-		        }
-		  
-		        return null;
-		    }
-		});
-		          
-		Optional<ArtificialSatellite> result = dialog.showAndWait(); 
-  	}
+		        if (b == buttonTypeOk) {
+		        	try {
+		        		String sName= text1.getText();
+		        		String sCountry= text2.getText();		        		
+		        		ArtificialSatellite.serviceType sServiceType =  comboBox.getValue().equals("MILITAR")? serviceType.MILITAR:
+		        			comboBox.getValue().equals("COMUNICACION")? serviceType.COMUNICACION:serviceType.METEOROLOGICO;
+		        		String nameG = listViewGalaxy.getSelectionModel().getSelectedItem().getName();
+		        		String nameP=  labelNombre.getText();
+		        		miPlanetario.addArtificialSatellite(nameG, nameP, sName, sCountry, sServiceType);
+		        		ArrayList<Satellite> satellites = miPlanetario.getSatellitesArtificial(nameG, nameP).getListSatellites(new ArrayList<Satellite>());
+		        		ObservableList<String> itemsSatellites =FXCollections.observableArrayList ();
+		        		for (int i=0; i<satellites.size();i++) {
+		        			System.out.println(satellites.get(i));
+		        			itemsSatellites.add(satellites.get(i).getName());
+		        		}
+		        		listViewArtificialSatellite.setItems(itemsSatellites);
+		        		listViewArtificialSatellite.getSelectionModel().select(0);
+		        		listViewArtificialSatellite.setOnMouseClicked(new EventHandler<Event>() {
+		    			@Override
+		    			public void handle(Event event) {
+		    				loadData();
+		    			}
+		        		});
+		        	}
+	        	 catch (NumberFormatException e) {
+					// TODO: handle exception
+	        		 JOptionPane.showMessageDialog(null, "Por Favor Ingrese en el campo NUMERO DE PLANETAS EN LA GALAXIA un NUMERO ENTERO");
+				}
+	         }
+	        else if (b==buttonTypeCancel) {
+	       	 dialog.close();
+	        }
+	  
+	        return null;
+	    }
+	});
+	          
+	Optional<ArtificialSatellite> result = dialog.showAndWait(); 
+}	
   	  
     @FXML
     void deleteASatellite(ActionEvent event) {
