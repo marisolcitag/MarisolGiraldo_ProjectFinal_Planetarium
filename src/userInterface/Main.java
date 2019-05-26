@@ -104,10 +104,7 @@ public class Main extends Application {
    
         saturn = new Sphere(20);
         saturn.setMaterial(darkOrangeMaterial);
-        
-        Ellipse elipticSaturn = new Ellipse();
-        elipticSaturn.setFill(Color.RED);
-        
+          
         //URANUS
         final PhongMaterial aquamarineMaterial = new PhongMaterial();
         aquamarineMaterial.setDiffuseColor(Color.AQUAMARINE);
@@ -255,7 +252,7 @@ public class Main extends Application {
         transitionSaturn.setDuration(Duration.seconds(10.200017421));
         transitionSaturn.setOrientation(PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
         transitionSaturn.setCycleCount(Timeline.INDEFINITE);
-        transitionSaturn.play();
+        transitionSaturn.play();       
         
         //URANUS ELLIPSE
         Ellipse ellipseUranus = new Ellipse();
@@ -371,7 +368,15 @@ public class Main extends Application {
         moonPane.translateXProperty().bind(earth.translateXProperty());
         moonPane.translateYProperty().bind(earth.translateYProperty());
         moonPane.setMaxSize(100, 100);
+        
+        //___________
+        StackPane rootSaturn = new StackPane();
+        StackPane saturnPane = new StackPane();
+        saturnPane.translateXProperty().bind(saturn.translateXProperty());
+        saturnPane.translateYProperty().bind(saturn.translateYProperty());
+        saturnPane.setMaxSize(100, 100);
  
+        //__________
         root.getChildren().add(sun);
         root.getChildren().add(ellipseMercury);
         root.getChildren().add(mercury);
@@ -407,9 +412,8 @@ public class Main extends Application {
         btChange.setTranslateY(300);
         btChange.setOnMousePressed(new EventHandler<Event>() {
 			public void handle(Event arg0) {
-					// TODO Auto-generated method stub
 				try {
-					AnchorPane root = (AnchorPane)FXMLLoader.load(getClass().getResource("Sample.fxml"));
+					AnchorPane root = (AnchorPane)FXMLLoader.load(getClass().getResource("Planetarium.fxml"));
 					Scene scene = new Scene(root,760,820);
 					primaryStage.setTitle("MI PLANETARIO");
 					primaryStage.setScene(scene);

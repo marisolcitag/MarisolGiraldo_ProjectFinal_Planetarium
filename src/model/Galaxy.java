@@ -130,14 +130,14 @@ public class Galaxy {
 		return myFirstPlanet;
 	}
 	
-	public void loadPlanetsFile(String path, String sep) throws IOException {
+	public void loadPlanetsFile(String path, String separator) throws IOException {
 		File f = new File(path);
 		FileReader fr = new FileReader(f);
 		BufferedReader br = new BufferedReader(fr);
 		
 		String line = br.readLine();
 		while(line != null) {
-			String[] parts = line.split(sep);
+			String[] parts = line.split(separator);
 			
 			String nameG = parts[0];
 			String name = parts[1];
@@ -152,10 +152,8 @@ public class Galaxy {
 			 Planet p = new Planet(name, averageDistanceSun, eccentricity, orbitalPeriod, orbitalVelocity, inclineOrbital, imageSource);
 			 addPlanet(p);
 	        }
-			line = br.readLine();
-			
+			line = br.readLine();	
 		}
-		
 		br.close();
 		fr.close();
 	}

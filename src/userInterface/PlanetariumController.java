@@ -282,7 +282,8 @@ public class PlanetariumController implements Initializable {
 		this.myPlanetarium = myPlanetarium;
 	}
 
-	public void btSearch(ActionEvent event) {
+	@FXML
+	void btSearch(ActionEvent event) {
 
 		TextInputDialog dialog = new TextInputDialog();
 		dialog.setTitle("Buscar Planeta");
@@ -323,7 +324,8 @@ public class PlanetariumController implements Initializable {
 		imageSource.setImage(new Image(ruta.toURI().toString()));		
 	}
 	
-	public void btBack(ActionEvent event) {
+	@FXML
+	void btBack(ActionEvent event) {
 		numCurrentPlanet--;
 		
 		if( currentPlanet.getPrevious()==null )
@@ -339,7 +341,8 @@ public class PlanetariumController implements Initializable {
 		}
 	}
 	
-	public void btForward(ActionEvent event) {
+	@FXML
+	void btForward(ActionEvent event) {
 		numCurrentPlanet++;
 		
 		if( currentPlanet.getNext()==null)
@@ -354,7 +357,8 @@ public class PlanetariumController implements Initializable {
 		}
 	}
 		
-	public void btAverageDistanceSun(ActionEvent event) {
+	@FXML
+	void btAverageDistanceSun(ActionEvent event) {
 		
 		Planet miPlanet = myPlanetarium.planetHigherInclination(listViewGalaxy.getSelectionModel().getSelectedItem().getName());
 		
@@ -365,7 +369,8 @@ public class PlanetariumController implements Initializable {
 		alert.showAndWait();
 	}
 	
-	public void btInclination(ActionEvent event) {
+	@FXML
+	void btInclination(ActionEvent event) {
 		
 		Planet miPlanetaX = myPlanetarium.searchPlanet(listViewGalaxy.getSelectionModel().getSelectedItem().getName(),labelName.getText());		
 			
@@ -382,7 +387,8 @@ public class PlanetariumController implements Initializable {
 		alert.showAndWait();
 	}
 	
-	public void btNasa(ActionEvent event) {
+	@FXML
+	void btNasa(ActionEvent event) {
 		
 		Stage stageNasa = new Stage();
 		// Create the WebView
@@ -401,7 +407,6 @@ public class PlanetariumController implements Initializable {
             {
                 if (newState == State.SUCCEEDED) 
                 {
-                    //stage.setTitle(webEngine.getLocation());
                     stageNasa.setTitle(webEngine.getTitle());
                 }
             }
@@ -428,7 +433,6 @@ public class PlanetariumController implements Initializable {
         stageNasa.show();
     }
 
-	
 	@FXML
     void btPaint(ActionEvent event) {
 		
@@ -712,8 +716,27 @@ public class PlanetariumController implements Initializable {
 	// Ordenamiento Galaxias
 	@FXML
     void orderGByName(ActionEvent event) {
-	
-    }
+		ArrayList<Galaxy> galaxiesToOrder= myPlanetarium.getGalaxies();
+		ObservableList<Galaxy> itemsGalaxy =FXCollections.observableArrayList ();
+		 for (int i=0; i<galaxiesToOrder.size();i++) {
+			 Galaxy g = new Galaxy(galaxiesToOrder.get(i).getName(),galaxiesToOrder.get(i).getNumPlanets());
+			 myPlanetarium.orderGalaxyByName();
+			 
+			 System.out.println(g.getName());
+			 
+			 
+		 }
+		listViewGalaxy.setItems(itemsGalaxy);
+		
+		listViewGalaxy.getSelectionModel().select(0);
+		listViewGalaxy.setOnMouseClicked(new EventHandler<Event>() {
+			@Override
+			public void handle(Event event) {
+				loadData();
+			}
+		});
+		loadData();
+   	 }
 		
 	@FXML
     void orderByNumPlanets(ActionEvent event) {
