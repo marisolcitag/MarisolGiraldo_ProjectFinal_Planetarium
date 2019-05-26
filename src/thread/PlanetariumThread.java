@@ -17,7 +17,7 @@ public class PlanetariumThread extends Thread{
     }
     
     public void run () {
-            Planetarium p = view.getMiPlanetario();
+            Planetarium p = view.getMyPlanetarium();
             Publicity temp = p.getPublicity();
             while(true) {
             	

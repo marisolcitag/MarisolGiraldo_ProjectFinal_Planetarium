@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 
 /**
- * Clase que representa la clase principal del modelo 
+ * Class Model Principal
  * 
  */
 public class Planetarium{
@@ -51,11 +51,6 @@ public class Planetarium{
   		return galaxies;
   	}
     
-    /**
-     * Busca una Galaxia según su nombre y retorna la galaxia.
-     * @param nameG es el nombre de la galaxia a buscar - nameG!=null
-     * @return Retorna la galaxia. Si no se encuentra ninguna galaxia retorna null
-     */
   	public Galaxy searchGalaxy(String nameG) {
   		 
   		for( int i = 0; i < galaxies.size(); i++ ){
@@ -66,12 +61,6 @@ public class Planetarium{
   	    return null;
   	}
   	
-  	/**
-     * Busca una galaxia utilizando el ALGORITMO DE BUSQUEDA BINARIA. <br>
-     * <b>pre: </b> La lista de galaxias se encuentra ordenada por nombre.
-     * @param nameG es el nombre de la galaxia que se va a buscar - name!=null
-     * @return La posición de la galaxia con el nombre dado. Si la galaxia no existe se retorna -1.
-     */
     public int searchBinaryByGalaxyName( String nameG )
     {
         int position = -1;
@@ -98,12 +87,6 @@ public class Planetarium{
         return position;
     }
     
-    /**
-     * Busca una galaxia utilizando el ALGORITMO DE BUSQUEDA BINARIA. <br>
-     * <b>pre: </b> La lista de galaxias se encuentra ordenada por numero de planetas.
-     * @param numPlanetsG es el numero de planetas de la galaxia que se va a buscar - numPlanetsG!=null
-     * @return La posición de la galaxia con el numero de planetas dado. Si la galaxia no existe se retorna -1.
-     */
     public int searchBinaryByGalaxyNumPlanets( int numPlanetsG) {
         int position = -1;
         int begin = 0;
@@ -181,24 +164,11 @@ public class Planetarium{
 	public Planet getMyFirstPlanet(String nameG) {
 		return searchGalaxy(nameG).getMyFirstPlanet();
 	}	
-	/**
-     * Nombre: planetHigherInclination()
-     * Descripcion:Retorna el Planeta con Mayor Inclinacion
-	 * @return miPlaneta
-	 * @linecode : 7 Lineas
-	 * @devtime : 20 Minutos
-	 */	 
+
     public Planet planetHigherInclination(String nameG){
 	   	return searchGalaxy(nameG).planetHigherInclination();
     }
     
-    /**
-	 * Nombre: searchPlanet(String nameG,String nameP)
-     * Descripción: Metodo que Retorna el Planeta que Ingrese como Parametro de Busqueda
-	 * @return miPlaneta
-	 * @linecode : 7 Lineas
-	 * @devtime : 15 Minutos
-	 */
 	public Planet searchPlanet(String nameG,String nameP){
 		return searchGalaxy(nameG).searchPlanet(nameP);
 	}
@@ -213,11 +183,9 @@ public class Planetarium{
 		return searchGalaxy(nameG).searchPlanet(nameP).getRootNatural();
   		 
   	}
-
 	
 	public void addNaturalSatelite( String nameG, String nameP, String nameS, String statusS, int areaS ){
-		searchGalaxy(nameG).addNaturalSatellite(nameP, nameS, statusS, areaS);
-	    
+		searchGalaxy(nameG).addNaturalSatellite(nameP, nameS, statusS, areaS);	    
 	}
 	
 	public void deleteNaturalSatelite( String nameG, String nameP, String nameS )
@@ -239,7 +207,4 @@ public class Planetarium{
 		return searchGalaxy(nameG).searchPlanet(nameP).getRootArtificial();
   		 
   	}
-	
-	
-	
 }

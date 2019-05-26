@@ -2,23 +2,26 @@ package model;
 
 public class Publicity {
 	
-	private String ruta;
+	//ATRIBUTES
+	
+	private String path;
 	
 	private Publicity previous;
 	
 	private Publicity next;
 	
-	public Publicity(String pRuta) {
+	//CONSTRUCTOR
+	public Publicity(String pRoute) {
 		
-		ruta=pRuta;
+		path=pRoute;
 	}
 
 	public String getRuta() {
-		return ruta;
+		return path;
 	}
 
 	public void setRuta(String ruta) {
-		this.ruta = ruta;
+		this.path = ruta;
 	}
 
 	public Publicity getPrevious() {
@@ -36,5 +39,4 @@ public class Publicity {
 	public void setNext(Publicity next) {
 		this.next = next;
 	}
-	
 }

@@ -5,18 +5,24 @@ import java.util.ArrayList;
 
 public abstract class Satellite implements Comparable<Satellite>, Serializable {
 	
+	//ATTRIBUTES
+	
 	private String name;
 	
 	private Satellite left;
     
     private Satellite right;
 
+    //CONSTRUCTOR
+    
 	public Satellite(String name) {
 		this.name = name;
 		left=null;
 		right=null;
 	}
 
+	//METHODS
+	
 	public Satellite getLeft() {
 		return left;
 	}
@@ -37,34 +43,18 @@ public abstract class Satellite implements Comparable<Satellite>, Serializable {
 		return name;
 	}
 	
-	/**
-     * Indica si este nodo es una hoja
-     * @return true si este nodo es una hoja y false en caso contrario
-     */
     public boolean isSheet( ){
         return left == null && right == null;
     }
     
-    /**
-     * Retorna el satelite que alfabéticamente corresponde al menor satelite del árbol que parte de este nodo
-     * @return satelite con menor nombre
-     */
     public Satellite getMinor( ){
         return ( left == null ) ? this : left.getMinor( );
     }
     
-    /**
-     * Retorna el satelite que alfabéticamente corresponde al mayor satelite del árbol que parte de este nodo
-     * @return satelite con mayor nombre
-     */
     public Satellite getMajor( ){
         return ( right == null ) ? this : right.getMajor( );
     }
     
-	/**
-     * Retorna la altura del árbol de satelites que comienza en este nodo
-     * @return altura del árbol que comienza en este nodo
-     */
     public int getHeight( )
     {
         if( isSheet( ) )
@@ -77,10 +67,6 @@ public abstract class Satellite implements Comparable<Satellite>, Serializable {
         }
     }
     
-    /**
-     * Retorna el número de hojas que hay en el árbol que comienza en este nodo
-     * @return número de hojas que hay en el árbol que comienza en este nodo
-     */
     public int countSheet( )
     {
         if( isSheet()) 
@@ -93,11 +79,6 @@ public abstract class Satellite implements Comparable<Satellite>, Serializable {
         }
     }
     
-    /**
-     * Inserta un nuevo satelite al árbol que comienza en este nodo.
-     * @param nuevo el  nuevo satelite que se va a insertar - nuevo != null
-     * @throws AlreadyExistSatelliteException se lanza esta excepción si el satelite que se quiere agregar ya está en el planeta
-     */
     public void insertSatellite( Satellite newNS ) throws AlreadyExistSatelliteException
     {
         if( compareTo( newNS ) == 0 )
@@ -121,11 +102,6 @@ public abstract class Satellite implements Comparable<Satellite>, Serializable {
         }
     }
 
-	/**
-     * Implementación recursiva para localizar un satelite en el árbol que comienza en este nodo
-     * @param unNombre nombre que se va a buscar - unNombre != null
-     * @return satelite asociado al nombre. Si no lo encuentra retorna null;
-     */
     public Satellite searchSatellite( String nameNS )
     {
         if( name.compareToIgnoreCase( nameNS ) == 0 )
@@ -136,11 +112,6 @@ public abstract class Satellite implements Comparable<Satellite>, Serializable {
             return ( right == null ) ? null : right.searchSatellite( nameNS );
     }
 
-    /**
-     * Elimina un satelite del árbol que comienza en este nodo.
-     * @param unNombre nombre del satelite que se va a eliminar - hay un satelite en el árbol que se llama unNombre
-     * @return el árbol de satelites después de eliminar el satelite indicado
-     */
     public Satellite deleteSatellite( String nameNS )
     {
         if( isSheet())
@@ -168,22 +139,6 @@ public abstract class Satellite implements Comparable<Satellite>, Serializable {
         return this;
     }
 
-    /**
-     * Retorna una colección con los nombres de todos los satelites, ordenados alfabéticamente en orden ascendente
-     * @param s colección donde se van agregando los nombres de los satelites ordenadamente
-     */
-   /* public void inordenByName( Collection s )
-    {
-        // Recorre en inorden el subárbol izquierdo
-        if( left != null )
-            left.inordenByName( s );
-        // Incluye en el recorrido el contacto de la raíz
-        s.add( name );
-        // Recorre en inorden el subárbol derecho
-        if( right != null )
-            right.inordenByName( s );
-    }*/
-    
     //PREORDER
     public void preorder(ArrayList<Satellite> s) {
 		s.add(this);
@@ -217,11 +172,6 @@ public abstract class Satellite implements Comparable<Satellite>, Serializable {
 		s.add(this);
 	}
     
-    
-    /**
-     * Indica si el árbol que comienza en este nodo es ordenado
-     * @return true si el árbol que comienza en este nodo es ordenado
-     */
     public boolean isOrdered( )
     {
         if( isSheet( ) )
@@ -237,11 +187,6 @@ public abstract class Satellite implements Comparable<Satellite>, Serializable {
             return right.isOrdered( ) && name.compareTo( right.getMinor( ).getName( ) ) < 0 && left.isOrdered( ) && name.compareTo( left.getMajor().getName( ) ) > 0;
     }
 
-    /**
-     * Cuenta el número de veces que aparece un satelite con un nombre que se recibe como parámetro
-     * @param nombreP nombre del satelite que se está buscando - nombreP != null
-     * @return número de satelites con un nombre dado
-     */
     public int countOccurrences( String nameNS )
     {
         int howmany = 0;

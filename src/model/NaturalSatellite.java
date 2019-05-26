@@ -3,11 +3,13 @@ package model;
 public class NaturalSatellite extends Satellite {
 	
 	//ATTRIBUTES
+	
     private String status;
     
     private int area;
       
    //CONSTRUCTOR
+    
     public NaturalSatellite( String nSatellite, String sSatellite, int aSatellite){
         super(nSatellite);
         status = sSatellite;
@@ -15,6 +17,7 @@ public class NaturalSatellite extends Satellite {
     }
 
     //METHODS
+    
 	public String getStatus() {
 		return status;
 	}

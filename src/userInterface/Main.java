@@ -411,7 +411,7 @@ public class Main extends Application {
 				try {
 					AnchorPane root = (AnchorPane)FXMLLoader.load(getClass().getResource("Sample.fxml"));
 					Scene scene = new Scene(root,760,820);
-					primaryStage.setTitle("PLANETARIUM");
+					primaryStage.setTitle("MI PLANETARIO");
 					primaryStage.setScene(scene);
 					primaryStage.show();
 				} catch(Exception e) {
@@ -430,7 +430,7 @@ public class Main extends Application {
             	primaryStage.close();
             }
         }));
-        primaryStage.setTitle("Solar System Simulation");
+        primaryStage.setTitle("Simulación Sistema Solar");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

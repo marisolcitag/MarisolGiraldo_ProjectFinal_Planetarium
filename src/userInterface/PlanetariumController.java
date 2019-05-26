@@ -1,39 +1,60 @@
 package userInterface;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Scanner;
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Worker.State;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Cursor;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Line;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.ArtificialSatellite;
@@ -45,116 +66,108 @@ import model.Planetarium;
 import model.Publicity;
 import model.Satellite;
 import thread.PlanetariumThread;
+import java.awt.image.RenderedImage;
 
 /**
- * Clase que representa el Controlador
- * 
+ * Controller Class
  */
 public class PlanetariumController implements Initializable {
 
-	// ATRIBUTOS
+	// ATRIBUTTES
 
 	@FXML
     private ImageView banner;
 
 	/**
-     * Es la Etiqueta Nombre 
+     * Label Name
      */
 	@FXML
-	private Label labelNombre;
+	private Label labelName;
 
 	/**
-     * Es la Etiqueta correspondiente a la Distancia Media al Sol
+     * Label Distance
      */
 	@FXML
-	private Label labelDistancia;
+	private Label labelAverageDistanceSun;
 
 	/**
-     * Es la Etiqueta correspondiente al Excentricidad
+     * Label Eccentricity
      */
 	@FXML
-	private Label labelExcentricidad;
+	private Label labelEccentricity;
 
 	/**
-     * Es la Etiqueta correspondiente al Periodo Orbital
+     * Label Orbital Period
      */
 	@FXML
-	private Label labelPeriodo;
+	private Label labelOrbitalPeriod;
 
 	/**
-     * Es la Etiqueta correspondiente al Periodo Orbital
+     * Label Orbital Velocity
      */
 	@FXML
-	private Label labelVelocidad;
+	private Label labelOrbitalVelocity;
 
 	/**
-     * Es la Etiqueta correspondiente a la Inclinacion
+     * Label Incline Orbital
      */
 	@FXML
-	private Label labelInclinacion;
+	private Label labelInclineOrbital;
 
 	/**
-     * Es el ImageView correspondiente a la Imagen
+     * ImageView 
      */
 	@FXML
-	private ImageView imgPlaneta;
+	private ImageView imageSource;
 
 	/**
-	 * Es el botón Atras
+	 * Button Back
 	 */
 	@FXML
-	private Button btAtras;
+	private Button btBack;
 
 	/**
-	 * Es el botón Buscar
+	 * Button Search
 	 */
 	@FXML
-	private Button bBuscar;
+	private Button btSearch;
 
 	/**
-	 * Es el botón Avanzar
+	 * Button Forward
 	 */
 	@FXML
-	private Button btAvanzar;
+	private Button btForward;
 	
 	/**
-	 * Es el botón Opcion1
+	 * Button Inclination
 	 */
 	@FXML
-    private Button btOpcion1;
+    private Button btInclination;
 
 	/**
-	 * Es el botón Opcion2
+	 * Button AverageDistanceSun
 	 */
     @FXML
-    private Button btOpcion2;
+    private Button btAverageDistanceSun;
     
+    /**
+	 * Button Nasa
+	 */
     @FXML
     private Button btNasa;
     
+    /**
+	 * Button Paint Solar System
+	 */
     @FXML
     private Button btSolarSystem;
  
+    /**
+	 * Image Publicity
+	 */
     @FXML
     private ImageView imgPublicity;
-    
-    private Galaxy myGalaxy;
-    
-    /**
-	 * Objeto de la Clase Principal del Mundo - Planetario.
-	 */
-	private Planetarium miPlanetario;
-
-	/**
-	 * indice Planeta
-	 */
-	private int numeroPlanetaActual;
-
-	/**
-	 * Atributo tipo Planeta 
-	 */	
-	private Planet planetaActual;
-	
+    	
 	 @FXML
 	private ListView<Galaxy> listViewGalaxy;
 	 
@@ -164,18 +177,21 @@ public class PlanetariumController implements Initializable {
 	@FXML 
 	private ListView listViewArtificialSatellite;
 	
+	private Planetarium myPlanetarium;
+	
+	private int numCurrentPlanet;
+
+	private Planet currentPlanet;
+	
 	private NaturalSatellite naturalS;
 	
 	private Publicity myPublicity;
 	
-
-	// METODOS
-	
+	// METHODS
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		// TODO Auto-generated method stub
-		miPlanetario = new Planetarium();
-		ArrayList<Galaxy> galaxies = miPlanetario.getGalaxies();
+		myPlanetarium = new Planetarium();
+		ArrayList<Galaxy> galaxies = myPlanetarium.getGalaxies();
 		ObservableList<Galaxy> items =FXCollections.observableArrayList (
 		    galaxies.get(0), galaxies.get(1));
 		listViewGalaxy.setItems(items);
@@ -184,189 +200,89 @@ public class PlanetariumController implements Initializable {
 
 			@Override
 			public void handle(Event event) {
-				// TODO Auto-generated method stub
 				loadData();
 			}
 		});
 		loadData();
 		
 		PlanetariumThread publicityThread = new PlanetariumThread(this);
-		publicityThread.start();
-		
+		publicityThread.start();		
 	}
 	
 	public void loadData() {
-		Planet miPlaneta = miPlanetario.getMyFirstPlanet(listViewGalaxy.getSelectionModel().getSelectedItem().getName());
-		planetaActual= miPlaneta;
-		myPublicity = miPlanetario.getPublicity();
+		Planet miPlanet = myPlanetarium.getMyFirstPlanet(listViewGalaxy.getSelectionModel().getSelectedItem().getName());
+		currentPlanet= miPlanet;
+		myPublicity = myPlanetarium.getPublicity();
 		
-		labelNombre.setText(miPlaneta.getName().toString());
-		labelDistancia.setText(String.valueOf(miPlaneta.getAverageDistanceSun() + "UA"));
-		labelExcentricidad.setText(String.valueOf(miPlaneta.getEccentricity()));
-		labelPeriodo.setText(String.valueOf(miPlaneta.getOrbitalPeriod() + " días"));
-		labelVelocidad.setText(String.valueOf(miPlaneta.getOrbitalVelocity() + " km/s"));
-		labelInclinacion.setText(String.valueOf(miPlaneta.getInclineOrbital() + " °"));
-		File ruta = new File(miPlaneta.getImage());
-		imgPlaneta.setImage(new Image(ruta.toURI().toString()));
-		numeroPlanetaActual = 0;
-		btAtras.setDisable(true);
+		labelName.setText(miPlanet.getName().toString());
+		labelAverageDistanceSun.setText(String.valueOf(miPlanet.getAverageDistanceSun() + "UA"));
+		labelEccentricity.setText(String.valueOf(miPlanet.getEccentricity()));
+		labelOrbitalPeriod.setText(String.valueOf(miPlanet.getOrbitalPeriod() + " días"));
+		labelOrbitalVelocity.setText(String.valueOf(miPlanet.getOrbitalVelocity() + " km/s"));
+		labelInclineOrbital.setText(String.valueOf(miPlanet.getInclineOrbital() + " °"));
+		File path = new File(miPlanet.getImage());
+		imageSource.setImage(new Image(path.toURI().toString()));
+		numCurrentPlanet = 0;
+		btBack.setDisable(true);
 	}
 	
-	/**
-     * Metodo: getLabelNombre()
-     * Descripcion: Este Metodo se encarga de Retornar el Nombre del Planeta
-     * @return nombre - Retorna el nombre del deportista.
-     * @linecode : 1 Linea
-     * @devtime : 1 Minuto
-	 */
-	public Label getLabelNombre() {
-		return labelNombre;
+	public Label getLabelName() {
+		return labelName;
 	}
 	
-	/**
-     * Metodo: setLabelNombre
-     * Descripcion: Este Metodo se encarga de Modificar  el Nombre del Planeta
-     * @param nombre Nuevo nombre.
-     * @linecode : 1 Linea
-     * @devtime : 1 Minuto
-	 */
-	public void setLabelNombre(Label labelNombre) {
-		this.labelNombre = labelNombre;
+	public void setLabelName(Label labelName) {
+		this.labelName = labelName;
 	}
 
-	/**
-     * Metodo: getLabelDistancia()
-     * Descripcion: Este Metodo se encarga de Retornar la distancia del Planeta
-     * @return nombre - Retorna el nombre del deportista.
-     * @linecode : 1 Linea
-     * @devtime : 1 Minuto
-	 */
-	public Label getLabelDistancia() {
-		return labelDistancia;
+	public Label getLabelAverageDistanceSun() {
+		return labelAverageDistanceSun;
 	}
 
-	public void setLabelDistancia(Label labelDistancia) {
-		this.labelDistancia = labelDistancia;
+	public void setLabelAverageDistanceSun(Label labelDistance) {
+		this.labelAverageDistanceSun = labelDistance;
 	}
 
-	/**
-     * Metodo: getLabelExcentricidad()
-     * Descripcion: Este Metodo se encarga de Retornar el Label de la Excentricidad del Planeta
-     * @return excentricidad - Retorna el valor del Label de la excentricididad del Planeta
-     * @linecode : 1 Linea
-     * @devtime : 1 Minuto
-	 */
-	public Label getLabelExcentricidad() {
-		return labelExcentricidad;
+	public Label getLabelEccentricity() {
+		return labelEccentricity;
 	}
 
-	/**
-     * Metodo: setLabelExcentricidad()
-     * Descripcion: Este Metodo se encarga de Modificar el Label de la Excentricidad del Planeta
-     * @param excentricidadP Nueva Excentricidad.
-     * @linecode : 1 Linea
-     * @devtime : 1 Minuto
-	 */
-	public void setLabelExcentricidad(Label labelExcentricidad) {
-		this.labelExcentricidad = labelExcentricidad;
+	public void setLabelEccentricity(Label labelExcentricidad) {
+		this.labelEccentricity = labelExcentricidad;
 	}
 
-	/**
-     * Metodo: getLabelPeriodo()
-     * Descripcion: Este Metodo se encarga de Retornar el Label de Periodo Orbital
-     * @return periodoOrbital - Retorna el valor del Label Periodo Orbital (Sinódico)
-     * @linecode : 1 Linea
-     * @devtime : 1 Minuto
-	 */
-	public Label getLabelPeriodo() {
-		return labelPeriodo;
+	public Label getLabelOrbitalPeriod() {
+		return labelOrbitalPeriod;
 	}
 
-	/**
-     * Metodo: setLabelPeriodo()
-     * Descripcion: Este Metodo se encarga de Modificar el valor del Label del Periodo Orbital
-     * @param periodoOrbitalSinodico -  Nuevo Periodo Orbital Sinodial.
-     * @linecode : 1 Linea
-     * @devtime : 1 Minuto
-	 */
-	public void setLabelPeriodo(Label labelPeriodo) {
-		this.labelPeriodo = labelPeriodo;
+	public void setLabelOrbitalPeriod(Label labelOrbitalPeriod) {
+		this.labelOrbitalPeriod = labelOrbitalPeriod;
 	}
 
-	/**
-     * Metodo: getLabelVelocidad()
-     * Descripcion: Este Metodo se encarga de Retornar el Label de la Velocidad Orbital
-     * @return valocidadOrbitalP - Retorna el valor del Label de la Velocidad Orbital (Sinódico)
-     * @linecode : 1 Linea
-     * @devtime : 1 Minuto
-	 */
-	public Label getLabelVelocidad() {
-		return labelVelocidad;
+	public Label getLabelOrbitalVelocity() {
+		return labelOrbitalVelocity;
 	}
 
-	/**
-     * Metodo: setLabelVelocidad()
-     * Descripcion: Este Metodo se encarga de Modificar el valor del Label de la Velocidad Orbital Media
-     * @param velocidadOrbitalMediaP -  Nueva Velocidad Orbital Media.
-     * @linecode : 1 Linea
-     * @devtime : 1 Minuto
-	 */
-	public void setLabelVelocidad(Label labelVelocidad) {
-		this.labelVelocidad = labelVelocidad;
+	public void setLabelOrbitalVelocity(Label labelOrbitalVelocity) {
+		this.labelOrbitalVelocity = labelOrbitalVelocity;
 	}
 
-	/**
-     * Metodo: getLabelInclinacion()
-     * Descripcion: Este Metodo se encarga de Retornar el Label de la Inclinacion Orbital
-     * @return inclinacion - Retorna el valor del Label de la Inclinacion
-     * @linecode : 1 Linea
-     * @devtime : 1 Minuto
-	 */
-	public Label getLabelInclinacion() {
-		return labelInclinacion;
+	public Label getLabelInclineOrbital() {
+		return labelInclineOrbital;
 	}
 
-	/**
-     * Metodo: setLabelInclinacion()
-     * Descripcion: Este Metodo se encarga de Modificar el valor del Label de la Inclinacion
-     * @param inclinacionP - Nueva Inclinacion
-     * @linecode : 1 Linea
-     * @devtime : 1 Minuto
-	 */
-	public void setLabelInclinacion(Label labelInclinacion) {
-		this.labelInclinacion = labelInclinacion;
+	public void setLabelInclineOrbital(Label labelInclineOrbital) {
+		this.labelInclineOrbital = labelInclineOrbital;
 	}
 
-	/**
-     * Metodo: getMiPlanetario()
-     * Descripcion: Este Metodo se encarga de retornar el Planetario
-     * @return miPlanetario - Retorna el Planetario
-     * @linecode : 1 Linea
-     * @devtime : 1 Minuto
-	 */
-	public Planetarium getMiPlanetario() {
-		return miPlanetario;
+	public Planetarium getMyPlanetarium() {
+		return myPlanetarium;
 	}
 
-	/**
-     * Metodo: setMiPlanetario()
-     * Descripcion: Este Metodo se encarga de Modificar el Planetario
-     * @param miPlanetario - Nuevo Planetario
-     * @linecode : 1 Linea
-     * @devtime : 1 Minuto
-	 */
-	public void setMiPlanetario(Planetarium miPlanetario) {
-		this.miPlanetario = miPlanetario;
+	public void setMyPlanetarium(Planetarium myPlanetarium) {
+		this.myPlanetarium = myPlanetarium;
 	}
 
-	/**
-	 * Nombre:miBotonBuscar() Descripción: Método para el Botón Buscar- Busca el Planeta que le Pida por Cuadro de Texto
-	 * 	 * @param nombreP - Nombre del Planeta a Buscar
-	 * @return resultado - Despliega la Información de Planeta que le Solicite
-	 * @linecode : 10 Lineas
-	 * @devtime : 15 Minutos
-	 */
-	public void miBotonBuscar(ActionEvent event) {
+	public void btSearch(ActionEvent event) {
 
 		TextInputDialog dialog = new TextInputDialog();
 		dialog.setTitle("Buscar Planeta");
@@ -377,136 +293,96 @@ public class PlanetariumController implements Initializable {
 
 		if (result.isPresent()) {
 			entered = result.get();
-			Planet miPlaneta = miPlanetario.searchPlanet(listViewGalaxy.getSelectionModel().getSelectedItem().getName(),entered);
-			if (miPlaneta == null) {
-				String mensaje = "El Planeta con Nombre " + entered + " no fue posible encontrarlo en este Sistema Solar";
-				Alert alerta = new Alert(AlertType.ERROR);
-				alerta.setContentText(mensaje);
-				alerta.showAndWait();
+			Planet myPlanet = myPlanetarium.searchPlanet(listViewGalaxy.getSelectionModel().getSelectedItem().getName(),entered);
+			if (myPlanet == null) {
+				String message = "El Planeta con Nombre " + entered + " no fue posible encontrarlo en este Sistema Solar";
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setContentText(message);
+				alert.showAndWait();
 			} else {
-				labelNombre.setText(miPlaneta.getName().toString());
-				labelDistancia.setText(String.valueOf(miPlaneta.getAverageDistanceSun() + "UA"));
-				labelExcentricidad.setText(String.valueOf(miPlaneta.getEccentricity()));
-				labelPeriodo.setText(String.valueOf(miPlaneta.getOrbitalPeriod() + " días"));
-				labelVelocidad.setText(String.valueOf(miPlaneta.getOrbitalVelocity() + " km/s"));
-				labelInclinacion.setText(String.valueOf(miPlaneta.getInclineOrbital() + " °"));
-				File ruta = new File(miPlaneta.getImage());
-				imgPlaneta.setImage(new Image(ruta.toURI().toString()));
+				labelName.setText(myPlanet.getName().toString());
+				labelAverageDistanceSun.setText(String.valueOf(myPlanet.getAverageDistanceSun() + "UA"));
+				labelEccentricity.setText(String.valueOf(myPlanet.getEccentricity()));
+				labelOrbitalPeriod.setText(String.valueOf(myPlanet.getOrbitalPeriod() + " días"));
+				labelOrbitalVelocity.setText(String.valueOf(myPlanet.getOrbitalVelocity() + " km/s"));
+				labelInclineOrbital.setText(String.valueOf(myPlanet.getInclineOrbital() + " °"));
+				File path = new File(myPlanet.getImage());
+				imageSource.setImage(new Image(path.toURI().toString()));
 			}
 		}
 	}
 	
-	/**Metodo: actualizar()
-	 * Descripción: Actualiza la información del Planeta despues de Avanzar o Retroceder.
-	 * <b>post:</b> - Actualiza la Información del Planeta
-	 * @linecode : 14 Lineas
-	 * @devtime : 20 Minutos
-	 */
-	public void actualizar() {
-		//planetaActual=miPlanetario.darPlanetas()[posicion];
-		labelNombre.setText(planetaActual.getName().toString());
-		labelDistancia.setText(String.valueOf(planetaActual.getAverageDistanceSun() + "UA"));
-		labelExcentricidad.setText(String.valueOf(planetaActual.getEccentricity()));
-		labelPeriodo.setText(String.valueOf(planetaActual.getOrbitalPeriod() + " días"));
-		labelVelocidad.setText(String.valueOf(planetaActual.getOrbitalVelocity() + " km/s"));
-		labelInclinacion.setText(String.valueOf(planetaActual.getInclineOrbital() + " °"));
-		File ruta = new File(planetaActual.getImage());
-		imgPlaneta.setImage(new Image(ruta.toURI().toString()));		
+	public void update() {
+		labelName.setText(currentPlanet.getName().toString());
+		labelAverageDistanceSun.setText(String.valueOf(currentPlanet.getAverageDistanceSun() + "UA"));
+		labelEccentricity.setText(String.valueOf(currentPlanet.getEccentricity()));
+		labelOrbitalPeriod.setText(String.valueOf(currentPlanet.getOrbitalPeriod() + " días"));
+		labelOrbitalVelocity.setText(String.valueOf(currentPlanet.getOrbitalVelocity() + " km/s"));
+		labelInclineOrbital.setText(String.valueOf(currentPlanet.getInclineOrbital() + " °"));
+		File ruta = new File(currentPlanet.getImage());
+		imageSource.setImage(new Image(ruta.toURI().toString()));		
 	}
 	
-	/**Metodo: anteriorPlaneta()
-	 * Descripción: Muestra el Planeta Anterior al que tengo en Pantalla
-	 * <b>post:</b> - Despliega la Información de Planeta Anterior al que tengo en Pantalla
-	 * @linecode : 4 Lineas
-	 * @devtime : 10 Minutos
-	 */
-	public void anteriorPlaneta(ActionEvent event) {
-		numeroPlanetaActual--;
+	public void btBack(ActionEvent event) {
+		numCurrentPlanet--;
 		
-		if( planetaActual.getPrevious()==null )
+		if( currentPlanet.getPrevious()==null )
 		{
-			btAtras.setDisable(true);
-			actualizar();
+			btBack.setDisable(true);
+			update();
 			
 		}
 		else {
-			planetaActual=planetaActual.getPrevious();
-			actualizar();		
-			btAvanzar.setDisable(false);
+			currentPlanet=currentPlanet.getPrevious();
+			update();		
+			btForward.setDisable(false);
 		}
 	}
 	
-	/**Metodo: siguientePlaneta()
-	 * Descripción: Muestra el Planeta Siguiente al que tengo en Pantalla
-	 * <b>post:</b> - Despliega la Información de Planeta siguiente al que tengo en Pantalla
-	 * @linecode : 4 Lineas
-	 * @devtime : 10 Minutos
-	 */
-	public void siguientePlaneta(ActionEvent event) {
-		numeroPlanetaActual++;
+	public void btForward(ActionEvent event) {
+		numCurrentPlanet++;
 		
-		if( planetaActual.getNext()==null)
+		if( currentPlanet.getNext()==null)
 		{
-			btAvanzar.setDisable(true);
-			actualizar();
+			btForward.setDisable(true);
+			update();
 		}
 		else {
-			planetaActual=planetaActual.getNext();
-				actualizar();
-		btAtras.setDisable(false);
+			currentPlanet=currentPlanet.getNext();
+				update();
+		btBack.setDisable(false);
 		}
 	}
-	
-	/**
-	 * Nombre:miBotonOpcion1()
-	 * Descripción: Método para el Botón Opcion 1 - Informa el Planeta de Mayor Inclinacion
-	 * @return resultado - un mensaje informando el Planeta de Mayor Inclinacion
-	 * @linecode : 5 Lineas
-	 * @devtime : 15 Minutos
-	 */
-	public void miBotonOpcion1(ActionEvent event) {
 		
-		Planet miPlaneta = miPlanetario.planetHigherInclination(listViewGalaxy.getSelectionModel().getSelectedItem().getName());
+	public void btAverageDistanceSun(ActionEvent event) {
 		
-		String mensaje = "El Planeta " + miPlaneta.getName()+ " tiene una inclinación de: " +miPlaneta.getInclineOrbital();
-		Alert alerta = new Alert(AlertType.INFORMATION);
-		alerta.setTitle("Planeta con Mayor Inclinación");
-		alerta.setContentText(mensaje);
-		alerta.showAndWait();
+		Planet miPlanet = myPlanetarium.planetHigherInclination(listViewGalaxy.getSelectionModel().getSelectedItem().getName());
+		
+		String message = "El Planeta " + miPlanet.getName()+ " tiene una inclinación de: " +miPlanet.getInclineOrbital();
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Planeta con Mayor Inclinación");
+		alert.setContentText(message);
+		alert.showAndWait();
 	}
 	
-	/**Nombre:miBotonOpcion2()
-	 * Descripción: Método para el Botón Buscar- Busca el Planeta que le Pida por Cuadro de Texto
-	 * <b>post:</b> - Despliega la Información de Planeta que le Solicite
-	 * @linecode : 7 Lineas
-	 * @devtime : 15 Minutos
-	 */	
-	public void miBotonOpcion2(ActionEvent event) {
+	public void btInclination(ActionEvent event) {
 		
-		//Planet miPlanetaTierra = miPlanetario.searchPlanet((String)listViewGalaxy.getSelectionModel().getSelectedItem(),Galaxy.NOMBRE_TIERRA);		
-		Planet miPlanetaX = miPlanetario.searchPlanet(listViewGalaxy.getSelectionModel().getSelectedItem().getName(),labelNombre.getText());		
+		Planet miPlanetaX = myPlanetarium.searchPlanet(listViewGalaxy.getSelectionModel().getSelectedItem().getName(),labelName.getText());		
 			
 		//double distanciaTierra = miPlanetaTierra.getAverageDistanceSun();		
 		double distanciaX = miPlanetaX.getAverageDistanceSun();		
 		//double distancia = Math.abs(distanciaTierra - distanciaX);
 		
 		//String mensaje = "La distancia entre " + miPlanetaX.darNombre()+ " a la Tierra es de : " +distancia+ "UA.";
-		String mensaje = "La distancia entre " + miPlanetaX.getName()+ " al Sol es de : " +distanciaX+ "UA.";
+		String message = "La distancia entre " + miPlanetaX.getName()+ " al Sol es de : " +distanciaX+ "UA.";
 
-		Alert alerta = new Alert(AlertType.INFORMATION);
-		alerta.setTitle("Distancia a la Tierra");
-		alerta.setContentText(mensaje);
-		alerta.showAndWait();
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Distancia a la Tierra");
+		alert.setContentText(message);
+		alert.showAndWait();
 	}
 	
-	/**Nombre:botonNasa()
-	 * Descripción: Método que implementa el Botón Nasa 
-	 * <b>post:</b> - Despliega la ventana de un navegador en www.nasa.gov
-	 * @linecode : 7 Lineas
-	 * @devtime : 15 Minutos
-	 */	
-
-	public void botonNasa(ActionEvent event) {
+	public void btNasa(ActionEvent event) {
 		
 		Stage stageNasa = new Stage();
 		// Create the WebView
@@ -551,21 +427,292 @@ public class PlanetariumController implements Initializable {
         // Display the Stage
         stageNasa.show();
     }
-	
+
 	
 	@FXML
-    void botonSimulation(ActionEvent event) {
+    void btPaint(ActionEvent event) {
+		
+		/* ----------STAGE & SCENE---------- */
+        BorderPane pane = new BorderPane();      
+        Scene scene = new Scene(pane, 600, 400);
+        Stage primaryStage = new Stage();
+        primaryStage.setTitle("Dibuja Tu Sistema Solar");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    
+		/* BOTONES */
+        ToggleButton drowbtn = new ToggleButton("Dibuja");
+        ToggleButton rubberbtn = new ToggleButton("Borra");
+        ToggleButton linebtn = new ToggleButton("Linea");
+        ToggleButton circlebtn = new ToggleButton("Circulo");
+        ToggleButton elpslebtn = new ToggleButton("Elipse");
+        
+        ToggleButton[] toolsArr = {drowbtn, rubberbtn, linebtn, circlebtn, elpslebtn};
+        
+        ToggleGroup tools = new ToggleGroup();
+        
+        for (ToggleButton tool : toolsArr) {
+            tool.setMinWidth(90);
+            tool.setToggleGroup(tools);
+            tool.setCursor(Cursor.HAND);
+        }
+        
+        ColorPicker cpLine = new ColorPicker(Color.BLACK);
+        ColorPicker cpFill = new ColorPicker(Color.TRANSPARENT);
+        
+        Label line_color = new Label("Color Linea");
+        Label fill_color = new Label("Color Relleno");
+        
+        Button save = new Button("Guardar Archivo");
+        Button open = new Button("Abrir Archivo");
+        
+        Button[] basicArr = {save, open};
+        
+        for(Button btn : basicArr) {
+            btn.setMinWidth(90);
+            btn.setCursor(Cursor.HAND);
+            btn.setTextFill(Color.WHITE);
+            btn.setStyle("-fx-background-color: #666;");
+        }
+        save.setStyle("-fx-background-color: #80334d;");
+        open.setStyle("-fx-background-color: #80334d;");
+        
+        VBox btns = new VBox(10);
+        btns.getChildren().addAll(drowbtn, rubberbtn, linebtn,circlebtn, elpslebtn,
+                line_color, cpLine, fill_color, cpFill, open, save);
+        btns.setPadding(new Insets(5));
+        btns.setStyle("-fx-background-color: #999");
+        btns.setPrefWidth(100);
+        
+        /* CANVAS */
+        Canvas canvas = new Canvas(1080, 790);
+        GraphicsContext gc;
+        gc = canvas.getGraphicsContext2D();
+        gc.setLineWidth(1);
+        
+        Line line = new Line();
+        Circle circ = new Circle();
+        Ellipse elps = new Ellipse();
+        
+        canvas.setOnMousePressed(e->{
+            if(drowbtn.isSelected()) {
+                gc.setStroke(cpLine.getValue());
+                gc.beginPath();
+                gc.lineTo(e.getX(), e.getY());
+            }
+            else if(rubberbtn.isSelected()) {
+                double lineWidth = gc.getLineWidth();
+                gc.clearRect(e.getX() - lineWidth / 2, e.getY() - lineWidth / 2, lineWidth, lineWidth);
+            }
+            else if(linebtn.isSelected()) {
+                gc.setStroke(cpLine.getValue());
+                line.setStartX(e.getX());
+                line.setStartY(e.getY());
+            }	            
+            else if(circlebtn.isSelected()) {
+                gc.setStroke(cpLine.getValue());
+                gc.setFill(cpFill.getValue());
+                circ.setCenterX(e.getX());
+                circ.setCenterY(e.getY());
+            }
+            else if(elpslebtn.isSelected()) {
+                gc.setStroke(cpLine.getValue());
+                gc.setFill(cpFill.getValue());
+                elps.setCenterX(e.getX());
+                elps.setCenterY(e.getY());
+            }
+        });
+        
+        canvas.setOnMouseDragged(e->{
+            if(drowbtn.isSelected()) {
+                gc.lineTo(e.getX(), e.getY());
+                gc.stroke();
+            }
+            else if(rubberbtn.isSelected()){
+                double lineWidth = gc.getLineWidth();
+                gc.clearRect(e.getX() - lineWidth / 2, e.getY() - lineWidth / 2, lineWidth, lineWidth);
+            }
+        });
+        
+        canvas.setOnMouseReleased(e->{
+            if(drowbtn.isSelected()) {
+                gc.lineTo(e.getX(), e.getY());
+                gc.stroke();
+                gc.closePath();
+            }
+            else if(rubberbtn.isSelected()) {
+                double lineWidth = gc.getLineWidth();
+                gc.clearRect(e.getX() - lineWidth / 2, e.getY() - lineWidth / 2, lineWidth, lineWidth);
+            }
+            else if(linebtn.isSelected()) {
+                line.setEndX(e.getX());
+                line.setEndY(e.getY());
+                gc.strokeLine(line.getStartX(), line.getStartY(), line.getEndX(), line.getEndY());	                
+            }
+            else if(circlebtn.isSelected()) {
+                circ.setRadius((Math.abs(e.getX() - circ.getCenterX()) + Math.abs(e.getY() - circ.getCenterY())) / 2);
+                
+                if(circ.getCenterX() > e.getX()) {
+                    circ.setCenterX(e.getX());
+                }
+                if(circ.getCenterY() > e.getY()) {
+                    circ.setCenterY(e.getY());
+                }          
+                gc.fillOval(circ.getCenterX(), circ.getCenterY(), circ.getRadius(), circ.getRadius());
+                gc.strokeOval(circ.getCenterX(), circ.getCenterY(), circ.getRadius(), circ.getRadius());                
+            }
+            else if(elpslebtn.isSelected()) {
+                elps.setRadiusX(Math.abs(e.getX() - elps.getCenterX()));
+                elps.setRadiusY(Math.abs(e.getY() - elps.getCenterY()));
+                
+                if(elps.getCenterX() > e.getX()) {
+                    elps.setCenterX(e.getX());
+                }
+                if(elps.getCenterY() > e.getY()) {
+                    elps.setCenterY(e.getY());
+                }
+                gc.strokeOval(elps.getCenterX(), elps.getCenterY(), elps.getRadiusX(), elps.getRadiusY());
+                gc.fillOval(elps.getCenterX(), elps.getCenterY(), elps.getRadiusX(), elps.getRadiusY());         
+            }   
+        });
+        
+        pane.setLeft(btns);
+        pane.setCenter(canvas);
+        
+        /* COLOR PICKER*/
+        cpLine.setOnAction(e->{
+                gc.setStroke(cpLine.getValue());
+        });
+        cpFill.setOnAction(e->{
+                gc.setFill(cpFill.getValue());
+        });
+        
+        /* OPEN BUTTON*/
+        open.setOnAction((e)->{
+            FileChooser openFile = new FileChooser();
+            openFile.setTitle("Abrir Archivo");
+            File file = openFile.showOpenDialog(primaryStage);
+            if (file != null) {
+                try {
+                    InputStream io = new FileInputStream(file);
+                    Image img = new Image(io);
+                    gc.drawImage(img, 0, 0);
+                } catch (IOException ex) {
+                    System.out.println("Error al Abrir el Archivo!");
+                }
+            }
+        });
 
+        /* SAVE BOTON */
+        save.setOnAction((e)->{
+        	FileChooser savefile = new FileChooser();
+        	savefile.setTitle("Guardar Archivo");
+    
+        	File file = savefile.showSaveDialog(primaryStage);
+        	if (file != null) {
+        		try {
+        			WritableImage writableImage = new WritableImage(1080, 790);
+        			canvas.snapshot(null, writableImage);
+        			RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+        			ImageIO.write(renderedImage, "png", file);
+        		} catch (IOException ex) {
+        			System.out.println("Error al Guardar el Archivo!");
+        		}
+        	}
+        });
     }
+	
+	@FXML
+    void btConstellations(ActionEvent event) {
+		
+		/* CANVAS*/ 
+        final int CANVAS_WIDTH = 800;
+        final int CANVAS_HEIGHT = 600;
+        final int POINT_WIDTH = 6;
+        final int POINT_HEIGHT = POINT_WIDTH;
+        Group root = new Group();
+        Scene scene = new Scene(root);
+        Canvas canvas = new Canvas(800, 600); 
+        Stage stage = new Stage();
+        stage.setTitle("Constelaciones"); 
+        root.getChildren().add(canvas);
+        stage.setScene(scene);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        /* STARS*/ 
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+        Scanner input = new Scanner(System.in);
+ 
+        // Ask user for the x,y coordinates for the start of the line
+        System.out.print("Ingrese la coordenada x y la coordenada y para el punto 1: ");
+        int x1 = input.nextInt();
+        int y1 = input.nextInt();
+
+        // Ask the user for the x, y coordinates for the end of the line
+        System.out.print("Ingrese la coordenada x y la coordenada y para el punto 2: ");
+        int x2 = input.nextInt();
+        int y2 = input.nextInt();
+
+        // Ask the user for the x, y coordinates for the end of the line
+        System.out.print("Ingrese la coordenada x y la coordenada y para el punto 3: ");
+        int x3 = input.nextInt();
+        int y3 = input.nextInt();
+
+        // Ask the user for the x, y coordinates for the end of the line
+        System.out.print("Ingrese la coordenada x y la coordenada y para el punto 4: ");
+        int x4 = input.nextInt();
+        int y4 = input.nextInt();
+
+        // Ask the user for the x, y coordinates for the end of the line
+        System.out.print("Ingrese la coordenada x y la coordenada y para el punto 5: ");
+        int x5 = input.nextInt();
+        int y5 = input.nextInt();
+      
+        //Create the canvas background by creating a rectangle that fills the
+        // whole screen with black color
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+        // Create a small circle that shows the start of a line
+        gc.setFill(Color.RED);
+        gc.fillOval(x1, y1, POINT_WIDTH, POINT_HEIGHT);
+        
+        // Create a circle that shows the end of the line
+        gc.fillOval(x2, y2, POINT_WIDTH, POINT_HEIGHT);        
+        
+        // Create a circle that shows the end of the line
+        gc.fillOval(x3, y3, POINT_WIDTH, POINT_HEIGHT);
+        
+       // Create a circle that shows the end of the line
+        gc.fillOval(x4, y4, POINT_WIDTH, POINT_HEIGHT);
+        
+        // Create a circle that shows the end of the line
+        gc.fillOval(x5, y5, POINT_WIDTH, POINT_HEIGHT);
+        
+        gc.setStroke(Color.BLUE);
+        gc.strokeLine(x1, y1, x2, y2);
+        gc.strokeLine(x2, y2, x3, y3);
+        gc.strokeLine(x3, y3, x4, y4);
+        gc.strokeLine(x4, y4, x5, y5);
+        gc.strokeLine(x5, y5, x1, y1);
+
+        gc.setFill(Color.WHITE);
+        gc.fillOval(50, 50, 100, 100);
+
+        double x = Math.random() * CANVAS_WIDTH;
+        double y = Math.random() * CANVAS_HEIGHT;
+        gc.setFill(Color.WHITE);
+        gc.fillOval(x, y, 1, 1);
+        stage.show();
+	}
+		
 	
 	// Ordenamiento Galaxias
 	@FXML
     void orderGByName(ActionEvent event) {
-		
-		
-		
-		
-
+	
     }
 		
 	@FXML
@@ -590,8 +737,6 @@ public class PlanetariumController implements Initializable {
     void orderByIOrbital(ActionEvent event) {
 
     }
-
-    
 
 	public void setImage(Image a) {
 		// TODO Auto-generated method stub
@@ -634,30 +779,24 @@ public class PlanetariumController implements Initializable {
 		        	 String gName= text1.getText();
 		        	 String gNum= text2.getText();
 		        	 Galaxy g = new Galaxy(gName,Integer.parseInt(gNum));
-		        	 ArrayList<Galaxy> galaxies = miPlanetario.getGalaxies();
+		        	 ArrayList<Galaxy> galaxies = myPlanetarium.getGalaxies();
 		        	 galaxies.add(g);
 		     		 ObservableList<Galaxy> itemsGalaxy =FXCollections.observableArrayList ();
 		     		 for (int i=0; i<galaxies.size();i++) {
 		     			 System.out.println(galaxies.get(i));
 		     			 itemsGalaxy.add(galaxies.get(i));
 		     		 }
-		     		//listViewGalaxy.refresh();
 		     		listViewGalaxy.setItems(itemsGalaxy);
 		    		listViewGalaxy.getSelectionModel().select(0);
 		    		listViewGalaxy.setOnMouseClicked(new EventHandler<Event>() {
 		    			@Override
 		    			public void handle(Event event) {
 		    				loadData();
-		    				/*itemsGalaxy.remove(galaxies);
-		    				itemsGalaxy.setAll(galaxies);*/
 		    			}
 		    		});
-		    		//listViewGalaxy.refresh();
 		    		loadData();
-			        // System.out.print("Name"+gName+"NumP"+gNum); 
 		        	 }
 		        	 catch (NumberFormatException e) {
-						// TODO: handle exception
 		        		 JOptionPane.showMessageDialog(null, "Por Favor Ingrese en el campo NUMERO DE PLANETAS EN LA GALAXIA un NUMERO ENTERO");
 					}
 		         }
@@ -667,8 +806,7 @@ public class PlanetariumController implements Initializable {
 		  
 		         return null;
 		     }
-		 });
-		          
+		 });      
 		 Optional<Galaxy> result = dialog.showAndWait();         
 	 }
 	
@@ -758,9 +896,9 @@ public class PlanetariumController implements Initializable {
 		        		String sStatus= text2.getText();
 		        		int sArea = Integer.parseInt(text3.getText());
 		        		String nameG = listViewGalaxy.getSelectionModel().getSelectedItem().getName();
-		        		String nameP=  labelNombre.getText();
-		        		miPlanetario.addNaturalSatelite(nameG, nameP, sName, sStatus, sArea);
-		        		ArrayList<Satellite> satellites = miPlanetario.getSatellitesNatural(nameG, nameP).getListSatellites(new ArrayList<Satellite>());
+		        		String nameP=  labelName.getText();
+		        		myPlanetarium.addNaturalSatelite(nameG, nameP, sName, sStatus, sArea);
+		        		ArrayList<Satellite> satellites = myPlanetarium.getSatellitesNatural(nameG, nameP).getListSatellites(new ArrayList<Satellite>());
 			        	ObservableList<String> itemsSatellites =FXCollections.observableArrayList ();
 			     		 for (int i=0; i<satellites.size();i++) {
 			     			 System.out.println(satellites.get(i));
@@ -776,7 +914,6 @@ public class PlanetariumController implements Initializable {
 			    		});
 		        	}
 		        	 catch (NumberFormatException e) {
-						// TODO: handle exception
 		        		 JOptionPane.showMessageDialog(null, "Por Favor Ingrese en el campo NUMERO DE PLANETAS EN LA GALAXIA un NUMERO ENTERO");
 					}
 		         }
@@ -851,9 +988,9 @@ public class PlanetariumController implements Initializable {
 		        		ArtificialSatellite.serviceType sServiceType =  comboBox.getValue().equals("MILITAR")? serviceType.MILITAR:
 		        			comboBox.getValue().equals("COMUNICACION")? serviceType.COMUNICACION:serviceType.METEOROLOGICO;
 		        		String nameG = listViewGalaxy.getSelectionModel().getSelectedItem().getName();
-		        		String nameP=  labelNombre.getText();
-		        		miPlanetario.addArtificialSatellite(nameG, nameP, sName, sCountry, sServiceType);
-		        		ArrayList<Satellite> satellites = miPlanetario.getSatellitesArtificial(nameG, nameP).getListSatellites(new ArrayList<Satellite>());
+		        		String nameP=  labelName.getText();
+		        		myPlanetarium.addArtificialSatellite(nameG, nameP, sName, sCountry, sServiceType);
+		        		ArrayList<Satellite> satellites = myPlanetarium.getSatellitesArtificial(nameG, nameP).getListSatellites(new ArrayList<Satellite>());
 		        		ObservableList<String> itemsSatellites =FXCollections.observableArrayList ();
 		        		for (int i=0; i<satellites.size();i++) {
 		        			System.out.println(satellites.get(i));
