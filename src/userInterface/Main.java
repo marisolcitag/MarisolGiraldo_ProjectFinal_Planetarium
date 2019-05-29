@@ -322,7 +322,7 @@ public class Main extends Application {
         transitionSatellite.play();
         
         //STAR                 
-        final int n = 100; // length and width of scene
+        /*final int n = 100; // length and width of scene
         final int centerX = n / 6; // x-coordinate of center of stage
         final int centerY = n / 6; // y-coordinate of center of stage
         final int radius = 10;
@@ -342,7 +342,7 @@ public class Main extends Application {
         triangle2.setTranslateY(radius / 2);        
         
         triangle1.setFill(Color.DARKGOLDENROD);
-        triangle2.setFill(Color.DARKGOLDENROD); 
+        triangle2.setFill(Color.DARKGOLDENROD); */
                
         /*
          * Hide the ellipse shadows
@@ -402,8 +402,8 @@ public class Main extends Application {
         root.getChildren().add(comet2);
         root.getChildren().add(circle);
         root.getChildren().add(group);
-        root.getChildren().add(triangle1);
-        root.getChildren().add(triangle2);
+        //root.getChildren().add(triangle1);
+        //root.getChildren().add(triangle2);
        
         //Button Iniciar
         Button btChange= new Button();

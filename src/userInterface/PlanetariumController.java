@@ -766,7 +766,7 @@ public class PlanetariumController implements Initializable {
 		  imgPublicity.setImage(a);	
 	}
 	
-	//ACTION BUTTONS GALAXY - ADD , DELETE
+	//ACTION BUTTONS GALAXY - ADD 
 	
 	 @FXML
 	 public void addGalaxy(ActionEvent event) {
@@ -832,51 +832,8 @@ public class PlanetariumController implements Initializable {
 		 });      
 		 Optional<Galaxy> result = dialog.showAndWait();         
 	 }
-	
-	 @FXML
-	 void deleteGalaxy(ActionEvent event) {
-		 Dialog<Galaxy> dialog = new Dialog<>();
-		 dialog.setTitle("Eliminar Galaxia");
-		 dialog.setHeaderText("Ingrese la Información de la Galaxia");
-		 dialog.setResizable(true);
-		  
-		 Label label1 = new Label("Nombre de la Galaxia: ");
-		 Label label2 = new Label("Numero de Planetas en la Galaxia: ");
-		 TextField text1 = new TextField();
-		 TextField text2 = new TextField();
-		          
-		 GridPane grid = new GridPane();
-		 grid.add(label1, 1, 1);
-		 grid.add(text1, 2, 1);
-		 grid.add(label2, 1, 2);
-		 grid.add(text2, 2, 2);
-		 dialog.getDialogPane().setContent(grid);
-		          
-		 ButtonType buttonTypeOk = new ButtonType("Aceptar", ButtonData.OK_DONE);
-		 ButtonType buttonTypeCancel = new ButtonType("Cancelar", ButtonData.CANCEL_CLOSE);
-		 
-		 dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
-		 dialog.getDialogPane().getButtonTypes().add(buttonTypeCancel);
-		  
-		 dialog.setResultConverter(new Callback<ButtonType, Galaxy>() {
-		     @Override
-		     public Galaxy call(ButtonType b) {
-		  
-		         if (b == buttonTypeOk) {
-		         }
-		         else if (b==buttonTypeCancel) {
-		        	 dialog.close();
-		         }
-		  
-		         return null;
-		     }
-		 });
-		          
-		 Optional<Galaxy> result = dialog.showAndWait();  
-	 }
-	 	
 
-	//ACTION BUTTONS NATURAL SATELLITE - ADD , DELETE
+	//ACTION BUTTONS NATURAL SATELLITE - ADD 
 	
 	@FXML
     void addNSatellite(ActionEvent event) {
@@ -950,14 +907,9 @@ public class PlanetariumController implements Initializable {
 		          
 		Optional<NaturalSatellite> result = dialog.showAndWait(); 
     }
-	
-    
-    @FXML
-    void deleteNSatellite(ActionEvent event) {
 
-    }
     
-  //ACTION BUTTONS ARTIFICIAL SATELLITE - ADD  DELETE
+  //ACTION BUTTONS ARTIFICIAL SATELLITE - ADD  
 	
   	@FXML
       void addASatellite(ActionEvent event) {
@@ -1042,11 +994,6 @@ public class PlanetariumController implements Initializable {
 	});
 	          
 	Optional<ArtificialSatellite> result = dialog.showAndWait(); 
-}	
+  	}	
   	  
-    @FXML
-    void deleteASatellite(ActionEvent event) {
-
-    }
- 
 }
