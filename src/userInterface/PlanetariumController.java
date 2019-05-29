@@ -713,7 +713,7 @@ public class PlanetariumController implements Initializable {
 	}
 		
 	
-	// Ordenamiento Galaxias
+	// Ordener Galaxies
 	@FXML
     void orderGByName(ActionEvent event) {
 		ArrayList<Galaxy> galaxiesToOrder= myPlanetarium.getGalaxies();
@@ -744,7 +744,7 @@ public class PlanetariumController implements Initializable {
     }
 
 	
-	// Ordenamiento Satelites Natural
+	// Order Natural Satellites
 	@FXML
     void orderSByName(ActionEvent event) {
 		
