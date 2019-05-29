@@ -15,7 +15,7 @@ class ArtificialSatelliteTest extends TestCase{
 	    /**
 	     * Satélite artificial de prueba
 	     */
-	    private ArtificialSatellite satellite;
+	    private ArtificialSatellite artificialsatellite;
 
 	    // METHODS
 
@@ -23,9 +23,9 @@ class ArtificialSatelliteTest extends TestCase{
 	     * Escenario 1: Construye un nuevo satélite natural.	     * 
 	     * satellite - Nombre: Satelite1, País: Colombia, Tipo de Servicio: COMUNICACION.
 	     */
-	    private void setupEscenario1( )
+	    private void setupEscenary1( )
 	    {
-	        satellite = new ArtificialSatellite("Satelite1", "Colombia", serviceType.MILITAR);
+	        artificialsatellite = new ArtificialSatellite("Satelite1", "Colombia", serviceType.MILITAR);
 	    }
 	    
 	    /**
@@ -39,8 +39,8 @@ class ArtificialSatelliteTest extends TestCase{
 	    @Test
 	    public void testGetName( )
 	    {
-	        setupEscenario1( );
-	        assertEquals( "El Nombre del Satelite Artificial Es Correcto", "Satelite1", satellite.getName() );
+	        setupEscenary1( );
+	        assertEquals( "El Nombre del Satelite Artificial Es Correcto", "Satelite1", artificialsatellite.getName() );
 	    }
 	    
 	    /**
@@ -54,8 +54,8 @@ class ArtificialSatelliteTest extends TestCase{
 	    @Test
 	    public void testGetCountry( )
 	    {
-	        setupEscenario1( );
-	        assertEquals( "El País del Satelite Artificial es Correcto", "Colombia", satellite.getCountry() );
+	        setupEscenary1( );
+	        assertEquals( "El País del Satelite Artificial es Correcto", "Colombia", artificialsatellite.getCountry() );
 	    }
 	    
 	    /**
@@ -69,7 +69,7 @@ class ArtificialSatelliteTest extends TestCase{
 	    @Test
 	    public void testGetServiceType( )
 	    {
-	        setupEscenario1( );
-	        assertEquals( "El Tipo de Servicio del Satelite Artificial es Correcto", serviceType.MILITAR, satellite.getServiceType() );
+	        setupEscenary1( );
+	        assertEquals( "El Tipo de Servicio del Satelite Artificial es Correcto", serviceType.MILITAR, artificialsatellite.getServiceType() );
 	    } 
 }

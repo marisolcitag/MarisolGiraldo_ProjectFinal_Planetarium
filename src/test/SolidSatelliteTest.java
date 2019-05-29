@@ -11,7 +11,7 @@ class SolidSatelliteTest extends TestCase{
 	/**
      * Satelite de prueba.
      */
-    private SolidSatellite satellite;
+    private SolidSatellite solidsatellite;
     
     //METHODS
     
@@ -21,7 +21,7 @@ class SolidSatelliteTest extends TestCase{
      * planeta - nombre: Satelite M, estado: Solido, area: 46, componente: hierro, porcentaje: 50%
      */
     private void setupEscenary1( ) {    
-    satellite = new SolidSatellite("Satelite1","Solido",25, "Hierro", "50%"); 
+    solidsatellite = new SolidSatellite("Satelite1","Solido",25, "Hierro", "50%"); 
     }
     
     /**
@@ -35,7 +35,7 @@ class SolidSatelliteTest extends TestCase{
     @Test
     public void testGetComponenteCore() {
     	setupEscenary1();
-    	assertEquals( "El Nombre del Satelite Natural Es Correcto","Hierro",satellite.getComponentCore()); 	
+    	assertEquals( "El Nombre del Satelite Natural Es Correcto","Hierro",solidsatellite.getComponentCore()); 	
     }
     
     /**
@@ -49,6 +49,6 @@ class SolidSatelliteTest extends TestCase{
     @Test
     public void testGetPercentageComponente() {
     	setupEscenary1();
-    	assertEquals( "El Porcentaje del Satelite Natural Es Correcto","50%",satellite.getPercentageComponent()); 	
+    	assertEquals( "El Porcentaje del Satelite Natural Es Correcto","50%",solidsatellite.getPercentageComponent()); 	
     }
 }

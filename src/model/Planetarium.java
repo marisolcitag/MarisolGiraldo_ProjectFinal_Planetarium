@@ -185,7 +185,11 @@ public class Planetarium{
   	}
 	
 	public void addNaturalSatelite( String nameG, String nameP, String nameS, String statusS, int areaS ){
-		searchGalaxy(nameG).addNaturalSatellite(nameP, nameS, statusS, areaS);	    
+		try {
+			searchGalaxy(nameG).addNaturalSatellite(nameP, nameS, statusS, areaS);
+		} catch (AlreadyExistSatelliteException e) {
+			e.printStackTrace();
+		}	    
 	}
 	
 	public void deleteNaturalSatelite( String nameG, String nameP, String nameS )
@@ -195,7 +199,11 @@ public class Planetarium{
 	
 	//ARTIFICIAL SATELLITE
 	public void addArtificialSatellite( String nameG, String nameP, String nameS, String countryS, ArtificialSatellite.serviceType typeS) {
+		try {
 		searchGalaxy(nameG).addArtificialSatellite(nameP, nameS,countryS,typeS);
+		} catch (AlreadyExistSatelliteException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void deleteArtificialSatelite( String nameG, String nameP, String nameS )

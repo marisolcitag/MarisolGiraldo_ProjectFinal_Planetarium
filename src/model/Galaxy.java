@@ -185,12 +185,8 @@ public class Galaxy {
     }
 	 
 	 //NATURAL SATELLITE
-	 public void addNaturalSatellite( String nameP, String nameS,String statusS, int areaS ){
-		 try {
-			searchPlanet(nameP).addNaturalSatellite(nameS, statusS, areaS);
-		} catch (AlreadyExistSatelliteException e) {
-			e.printStackTrace();
-		} 
+	 public void addNaturalSatellite( String nameP, String nameS,String statusS, int areaS ) throws  AlreadyExistSatelliteException{
+		 searchPlanet(nameP).addNaturalSatellite(nameS, statusS, areaS); 
 	  }
 	 
 	 public void deleteNaturalSatellite(String nameP,String nameS) {
@@ -198,7 +194,7 @@ public class Galaxy {
 	 }
 	 
 	 //ARTIFICIAL SATELLITE
-	 public void addArtificialSatellite( String nameP, String nameS,String countryS, ArtificialSatellite.serviceType typeS ){
+	 public void addArtificialSatellite( String nameP, String nameS,String countryS, ArtificialSatellite.serviceType typeS )throws  AlreadyExistSatelliteException{
 		 try {
 			searchPlanet(nameP).addArtificialSatellite(nameS, countryS, typeS);
 		} catch (AlreadyExistSatelliteException e) {

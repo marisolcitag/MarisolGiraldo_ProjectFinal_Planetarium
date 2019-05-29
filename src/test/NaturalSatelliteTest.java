@@ -12,7 +12,7 @@ class NaturalSatelliteTest extends TestCase {
     /**
      * Satélite natural de prueba
      */
-    private NaturalSatellite satellite;
+    private NaturalSatellite naturalsatellite;
 
     // METHODS
 
@@ -21,9 +21,9 @@ class NaturalSatelliteTest extends TestCase {
      * 
      * satélite - nombre: Satelite1, estado: Solido, area: 25
      */
-    private void setupEscenario1( )
+    private void setupEscenary1( )
     {
-        satellite = new NaturalSatellite( "Satelite1", "Solido", 25 );
+        naturalsatellite = new NaturalSatellite( "Satelite1", "Solido", 25 );
     }
 
     /**
@@ -37,8 +37,8 @@ class NaturalSatelliteTest extends TestCase {
     @Test
     public void testGetStatus( )
     {
-        setupEscenario1( );
-        assertEquals( "El Estado del Satelite Natural es Correcta", "Solido", satellite.getStatus() );
+        setupEscenary1( );
+        assertEquals( "El Estado del Satelite Natural es Correcta", "Solido", naturalsatellite.getStatus() );
     }
 
     /**
@@ -52,7 +52,7 @@ class NaturalSatelliteTest extends TestCase {
     @Test
     public void testGetArea( )
     {
-        setupEscenario1( );
-        assertEquals( "El Area del Satelite Natural es Correcta", 25, satellite.getArea() );
+        setupEscenary1( );
+        assertEquals( "El Area del Satelite Natural es Correcta", 25, naturalsatellite.getArea() );
     }
 }
